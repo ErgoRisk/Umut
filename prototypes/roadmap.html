@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3-Month Roadmap · Workwize</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #F6F7F9; display: flex; align-items: flex-start; justify-content: center; min-height: 100vh; padding: 48px 40px; color: #0F172A; }
+  .card { background: #ffffff; border-radius: 16px; border: 1px solid #E2E8F0; padding: 40px; width: 1040px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+  .feature-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 6px; }
+  .feature-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .feature-sub { font-size: 14px; color: #64748B; margin-bottom: 28px; line-height: 1.5; }
+  .divider { border: none; border-top: 1px solid #F1F5F9; margin-bottom: 28px; }
+
+  /* ── Gantt ── */
+  .gantt { margin-bottom: 32px; }
+
+  .gantt-header {
+    display: grid;
+    grid-template-columns: 204px 1fr 1fr 1fr;
+    margin-bottom: 8px;
+  }
+  .gantt-header-cell {
+    font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+    padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; text-align: center;
+  }
+  .gantt-header-cell:first-child { border-radius: 8px 0 0 8px; text-align: left; }
+  .gantt-header-cell:last-child  { border-radius: 0 8px 8px 0; }
+  .gantt-header-cell + .gantt-header-cell { border-left: none; }
+
+  .gantt-row { display: flex; align-items: center; height: 56px; border-bottom: 1px solid #F1F5F9; }
+  .gantt-row:last-child { border-bottom: none; }
+
+  .feat-cell {
+    width: 204px; flex-shrink: 0;
+    display: flex; align-items: center; gap: 10px;
+    padding-right: 16px;
+  }
+  .feat-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .n1 { background: #EEF2FF; color: #4338CA; }
+  .n2 { background: #F5F3FF; color: #7C3AED; }
+  .n3 { background: #ECFEFF; color: #0E7490; }
+  .n4 { background: #FEF2F2; color: #B91C1C; }
+  .feat-name { font-size: 14px; font-weight: 600; color: #0F172A; line-height: 1.3; }
+
+  .timeline {
+    flex: 1;
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  /* Month column backgrounds */
+  .month-bg {
+    position: absolute; top: 0; bottom: 0;
+    width: 33.333%;
+  }
+  .month-bg:nth-child(1) { left: 0; }
+  .month-bg:nth-child(2) { left: 33.333%; border-left: 1px solid #F1F5F9; background: #FAFBFC; }
+  .month-bg:nth-child(3) { left: 66.666%; border-left: 1px solid #F1F5F9; }
+
+  .bar {
+    position: absolute;
+    height: 30px;
+    border-radius: 6px;
+    display: flex; align-items: center;
+    padding: 0 10px;
+    font-size: 12px; font-weight: 600; color: #ffffff;
+    white-space: nowrap;
+    z-index: 1;
+  }
+
+  /* Widths are % of the 12-week timeline (each week = 8.333%) */
+  /* BambooHR: W1–W4 = 0% → 33.33% */
+  .bar-bamboo { background: #4338CA; left: 0%; width: 33.33%; }
+  /* Slack: W3–W6 = 16.67% → 50% */
+  .bar-slack  { background: #7C3AED; left: 16.67%; width: 33.33%; }
+  /* Dashboard: W6–W8 = 41.67% → 66.67% */
+  .bar-dash   { background: #0E7490; left: 41.67%; width: 25%; }
+  /* 3PL App: W9–W12 = 66.67% → 100% */
+  .bar-3pl    { background: #B91C1C; left: 66.67%; width: 33.33%; }
+
+  /* ── Rationale cards ── */
+  .rationale-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .r-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px 20px; }
+  .r-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .r-title-wrap { display: flex; align-items: center; gap: 8px; }
+  .r-num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .r-name { font-size: 14px; font-weight: 600; color: #0F172A; }
+  .r-order { font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .r-body { font-size: 13px; color: #64748B; line-height: 1.6; }
+  .r-body strong { color: #0F172A; font-weight: 600; }
+
+  /* ── Thesis ── */
+  .thesis { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 16px 20px; font-size: 13px; color: #1E40AF; line-height: 1.6; }
+  .thesis strong { font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="feature-label">3-Month Roadmap</div>
+  <div class="feature-title">Shipping sequence</div>
+  <div class="feature-sub">Four features sequenced by data dependency and risk. Start with the trigger (HR data in), end with the biggest bet (partner network out).</div>
+  <hr class="divider">
+
+  <!-- Gantt -->
+  <div class="gantt">
+    <div class="gantt-header">
+      <div class="gantt-header-cell">Feature</div>
+      <div class="gantt-header-cell">Month 1</div>
+      <div class="gantt-header-cell">Month 2</div>
+      <div class="gantt-header-cell">Month 3</div>
+    </div>
+
+    <!-- BambooHR -->
+    <div class="gantt-row">
+      <div class="feat-cell">
+        <div class="feat-num n1">1</div>
+        <div class="feat-name">BambooHR Integration</div>
+      </div>
+      <div class="timeline">
+        <div class="month-bg"></div>
+        <div class="month-bg"></div>
+        <div class="month-bg"></div>
+        <div class="bar bar-bamboo">W1–W4 · ships end of M1</div>
+      </div>
+    </div>
+
+    <!-- Slack -->
+    <div class="gantt-row">
+      <div class="feat-cell">
+        <div class="feat-num n2">2</div>
+        <div class="feat-name">Slack Integration</div>
+      </div>
+      <div class="timeline">
+        <div class="month-bg"></div>
+        <div class="month-bg"></div>
+        <div class="month-bg"></div>
+        <div class="bar bar-slack">W3–W6</div>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="gantt-row">
+      <div class="feat-cell">
+        <div class="feat-num n3">3</div>
+        <div class="feat-name">Aggregated Dashboard</div>
+      </div>
+      <div class="timeline">
+        <div class="month-bg"></div>
+        <div class="month-bg"></div>
+        <div class="month-bg"></div>
+        <div class="bar bar-dash">W6–W8</div>
+      </div>
+    </div>
+
+    <!-- 3PL App -->
+    <div class="gantt-row">
+      <div class="feat-cell">
+        <div class="feat-num n4">4</div>
+        <div class="feat-name">3PL App</div>
+      </div>
+      <div class="timeline">
+        <div class="month-bg"></div>
+        <div class="month-bg"></div>
+        <div class="month-bg"></div>
+        <div class="bar bar-3pl">W9–W12 · ships end of M3</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rationale cards -->
+  <div class="rationale-grid">
+    <div class="r-card">
+      <div class="r-head">
+        <div class="r-title-wrap">
+          <div class="r-num n1">1</div>
+          <div class="r-name">BambooHR Integration</div>
+        </div>
+        <div class="r-order">Ships first</div>
+      </div>
+      <div class="r-body"><strong>Why first:</strong> HR data is the trigger for every downstream action. Shipping this first means every new hire automatically creates clean, structured data in Workwize, which feeds the features that follow. Lowest technical risk, highest immediate value. Quick win that builds momentum.</div>
+    </div>
+
+    <div class="r-card">
+      <div class="r-head">
+        <div class="r-title-wrap">
+          <div class="r-num n2">2</div>
+          <div class="r-name">Slack Integration</div>
+        </div>
+        <div class="r-order">Ships second</div>
+      </div>
+      <div class="r-body"><strong>Why second:</strong> Now that BambooHR is auto-generating requests, Ilse needs a fast surface to approve and track them. Slack is where she already lives, so adoption is near-immediate. Compounds the BambooHR win by putting the resulting work in the right place.</div>
+    </div>
+
+    <div class="r-card">
+      <div class="r-head">
+        <div class="r-title-wrap">
+          <div class="r-num n3">3</div>
+          <div class="r-name">Aggregated Dashboard</div>
+        </div>
+        <div class="r-order">Ships third</div>
+      </div>
+      <div class="r-body"><strong>Why third:</strong> Needs 4 to 6 weeks of clean data flowing through BambooHR and Slack before the dashboard is meaningful. Serves Ilse's strategic job rather than her tactical job, natural second phase once daily ops are running smoothly.</div>
+    </div>
+
+    <div class="r-card">
+      <div class="r-head">
+        <div class="r-title-wrap">
+          <div class="r-num n4">4</div>
+          <div class="r-name">3PL App</div>
+        </div>
+        <div class="r-order">Ships last</div>
+      </div>
+      <div class="r-body"><strong>Why last:</strong> Highest complexity, external users, partner adoption risk. Requires Workwize's internal platform to be solid first so ops can support partners through migration. Bigger bet, bigger payoff, but needs the runway.</div>
+    </div>
+  </div>
+
+  <!-- Thesis -->
+  <div class="thesis">
+    <strong>The thesis:</strong> sequence from internal wins (HR data, daily Slack ops) to strategic visibility (dashboard) to the biggest external bet (partner network). Each feature builds on the one before it, and risk scales up as the platform matures.
+  </div>
+</div>
+</body>
+</html>
