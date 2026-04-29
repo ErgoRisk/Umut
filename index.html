@@ -3,100 +3,144 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Workwize PM Case Study · Umut Kaya</title>
+<title>Workwize PM Case Study · Umut Gunduz</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #F6F7F9; min-height: 100vh; padding: 60px 40px; color: #0F172A; }
-  .container { max-width: 860px; margin: 0 auto; }
-  .hero { margin-bottom: 48px; }
-  .eyebrow { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 12px; }
-  .hero-title { font-size: 32px; font-weight: 700; margin-bottom: 10px; line-height: 1.2; }
-  .hero-sub { font-size: 15px; color: #64748B; line-height: 1.6; max-width: 580px; }
-  .divider { border: none; border-top: 1px solid #E2E8F0; margin: 40px 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #F6F7F9; min-height: 100vh; padding: 64px 40px; color: #0F172A; }
+  .container { max-width: 880px; margin: 0 auto; }
 
-  .section-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 16px; }
-  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 40px; }
-  .grid-wide { grid-template-columns: repeat(3, 1fr); }
+  .hero { margin-bottom: 52px; }
+  .eyebrow { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 14px; }
+  .hero-title { font-size: 34px; font-weight: 700; margin-bottom: 12px; line-height: 1.2; color: #0F172A; }
+  .hero-sub { font-size: 15px; color: #64748B; line-height: 1.7; max-width: 600px; }
 
-  .card { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px; text-decoration: none; color: inherit; transition: all 0.15s; display: block; }
-  .card:hover { border-color: #BFDBFE; box-shadow: 0 4px 12px rgba(0,0,0,0.06); transform: translateY(-1px); }
-  .card-tag { font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 8px; }
-  .card-title { font-size: 15px; font-weight: 600; color: #0F172A; margin-bottom: 6px; }
-  .card-desc { font-size: 13px; color: #64748B; line-height: 1.5; }
-  .card-tag.f1 { color: #1D4ED8; }
-  .card-tag.f2 { color: #15803D; }
-  .card-tag.f3 { color: #7C3AED; }
-  .card-tag.f4 { color: #B45309; }
-  .card-tag.diagram { color: #0F172A; }
+  .divider { border: none; border-top: 1px solid #E2E8F0; margin: 44px 0; }
 
-  .footer { font-size: 13px; color: #94A3B8; text-align: center; padding-top: 20px; }
-  .footer a { color: #64748B; text-decoration: none; }
-  .footer a:hover { color: #0F172A; }
+  .section-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 14px; }
+
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 14px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid-1 { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 40px; }
+
+  .card { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px; text-decoration: none; color: inherit; transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; display: block; }
+  .card:hover { border-color: #BFDBFE; box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-1px); }
+
+  .card-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 8px; }
+  .card-title { font-size: 15px; font-weight: 600; color: #0F172A; margin-bottom: 6px; line-height: 1.3; }
+  .card-desc { font-size: 13px; color: #64748B; line-height: 1.55; }
+
+  .tag-f1 { color: #1D4ED8; }
+  .tag-f2 { color: #15803D; }
+  .tag-f3 { color: #7C3AED; }
+  .tag-f4 { color: #B45309; }
+  .tag-diagram { color: #64748B; }
+
+  .card-arrow { display: flex; justify-content: space-between; align-items: flex-end; }
+  .arrow { font-size: 16px; color: #CBD5E1; margin-top: 12px; }
+  .card:hover .arrow { color: #93C5FD; }
+
+  .footer { font-size: 13px; color: #94A3B8; text-align: center; padding-top: 12px; }
+  .footer a { color: #64748B; text-decoration: none; border-bottom: 1px solid #E2E8F0; }
+  .footer a:hover { color: #0F172A; border-color: #94A3B8; }
 </style>
 </head>
 <body>
 <div class="container">
+
   <div class="hero">
-    <div class="eyebrow">PM Case Study · Workwize</div>
-    <div class="hero-title">Four features that make Workwize<br>the obvious choice for global IT teams.</div>
-    <div class="hero-sub">A product manager case study. Research-backed, metrics-driven, built around one persona: the Head of IT who manages hardware across 10+ countries and can't afford to babysit partners or spreadsheets.</div>
+    <div class="eyebrow">PM Case Study · Workwize · Umut Gunduz</div>
+    <div class="hero-title">Four features I'd ship to make Workwize<br>the default for global IT teams.</div>
+    <div class="hero-sub">I spent time going through Workwize's customer reviews, mapped the competitive landscape, and looked for the gaps the whole category has ignored. These four features come directly from that research. Each one is scoped, metricked, and sequenced as a 3-month roadmap.</div>
   </div>
 
   <div class="divider"></div>
 
   <div class="section-label">Feature Prototypes</div>
-  <div class="grid">
-    <a class="card" href="prototypes/partner-order-queue.html">
-      <div class="card-tag f1">Feature 1 · 3PL App</div>
-      <div class="card-title">Partner Order Queue</div>
-      <div class="card-desc">Partner-facing view. Structured order queue replaces email. Mandatory serial number capture before shipment.</div>
-    </a>
-    <a class="card" href="prototypes/workwize-ops-dashboard.html">
-      <div class="card-tag f1">Feature 1 · 3PL App</div>
-      <div class="card-title">Workwize Ops Dashboard</div>
-      <div class="card-desc">Internal partner health view. SLA compliance, data freshness, stuck partner detection.</div>
+  <div class="grid-2" style="margin-bottom:14px;">
+    <a class="card" href="prototypes/feature-1-3pl-app.html">
+      <div class="card-tag tag-f1">Feature 1 · 3PL App</div>
+      <div class="card-arrow">
+        <div>
+          <div class="card-title">Partner portal + Ops dashboard</div>
+          <div class="card-desc">Replaces email and WhatsApp with a structured order queue. Partners capture serial numbers directly. Workwize ops get real-time partner health.</div>
+        </div>
+        <div class="arrow">↗</div>
+      </div>
     </a>
     <a class="card" href="prototypes/bamboohr-integration.html">
-      <div class="card-tag f2">Feature 2 · BambooHR Integration</div>
-      <div class="card-title">BambooHR Data Flow</div>
-      <div class="card-desc">New hire webhook triggers auto-provisioning. Role, location, and start date drive equipment selection.</div>
+      <div class="card-tag tag-f2">Feature 2 · BambooHR Integration</div>
+      <div class="card-arrow">
+        <div>
+          <div class="card-title">Zero-touch onboarding</div>
+          <div class="card-desc">New hire webhook triggers auto-provisioning. Role, location, and start date drive equipment selection with no IT involvement.</div>
+        </div>
+        <div class="arrow">↗</div>
+      </div>
     </a>
     <a class="card" href="prototypes/slack-integration.html">
-      <div class="card-tag f3">Feature 3 · Slack Integration</div>
-      <div class="card-title">Slack Integration</div>
-      <div class="card-desc">Approvals with context, smart notifications, inventory lookup, and employee self-service, all in Slack.</div>
+      <div class="card-tag tag-f3">Feature 3 · Slack Integration</div>
+      <div class="card-arrow">
+        <div>
+          <div class="card-title">Approvals, lookups, self-service in Slack</div>
+          <div class="card-desc">Approve requests in 15 seconds with full context. Check any employee's inventory with a slash command. No tab switching.</div>
+        </div>
+        <div class="arrow">↗</div>
+      </div>
     </a>
-  </div>
-  <div class="grid" style="grid-template-columns: 1fr;">
     <a class="card" href="prototypes/aggregated-dashboard.html">
-      <div class="card-tag f4">Feature 4 · Aggregated Dashboard</div>
-      <div class="card-title">Global Fleet Dashboard</div>
-      <div class="card-desc">Cross-region fleet visibility. Regional breakdown, trend charts, CSV and PDF exports for leadership.</div>
+      <div class="card-tag tag-f4">Feature 4 · Aggregated Dashboard</div>
+      <div class="card-arrow">
+        <div>
+          <div class="card-title">Global fleet visibility</div>
+          <div class="card-desc">Cross-region fleet health at a glance. Regional breakdown, trend charts, and one-click CSV and PDF exports for leadership.</div>
+        </div>
+        <div class="arrow">↗</div>
+      </div>
     </a>
   </div>
+
+  <div class="divider"></div>
 
   <div class="section-label">Diagrams</div>
-  <div class="grid grid-wide" id="diagram-grid">
+  <div class="grid-3">
     <a class="card" href="diagrams/competitive-matrix.html">
-      <div class="card-tag diagram">Analysis</div>
-      <div class="card-title">Competitive Matrix</div>
-      <div class="card-desc">Workwize vs Deel IT, Firstbase, GroWrk, Quipteams, Allwhere across 6 dimensions.</div>
+      <div class="card-tag tag-diagram">Competitive analysis</div>
+      <div class="card-arrow">
+        <div>
+          <div class="card-title">Competitive matrix</div>
+          <div class="card-desc">Workwize vs five competitors across six dimensions. Hover any score for the reasoning.</div>
+        </div>
+        <div class="arrow">↗</div>
+      </div>
     </a>
     <a class="card" href="diagrams/persona-card.html">
-      <div class="card-tag diagram">ICP</div>
-      <div class="card-title">Persona: Ilse</div>
-      <div class="card-desc">Head of IT. KPIs, daily frustrations, tools, and what a good Monday morning looks like.</div>
+      <div class="card-tag tag-diagram">ICP</div>
+      <div class="card-arrow">
+        <div>
+          <div class="card-title">Persona: Ilse</div>
+          <div class="card-desc">Head of IT. KPIs, tools, daily frustrations, and what a good Monday morning looks like for her.</div>
+        </div>
+        <div class="arrow">↗</div>
+      </div>
     </a>
     <a class="card" href="diagrams/feature-funnel.html">
-      <div class="card-tag diagram">Prioritization</div>
-      <div class="card-title">Feature Consideration Funnel</div>
-      <div class="card-desc">12 features considered, 4 selected. Reasoning for every cut.</div>
+      <div class="card-tag tag-diagram">Prioritization</div>
+      <div class="card-arrow">
+        <div>
+          <div class="card-title">Feature funnel</div>
+          <div class="card-desc">12 features considered, 4 made the cut. Reasoning for every cut included.</div>
+        </div>
+        <div class="arrow">↗</div>
+      </div>
     </a>
   </div>
 
+  <div class="divider"></div>
+
   <div class="footer">
-    Built by <a href="mailto:umut@ergorisk.net">Umut Kaya</a> · PM Case Study for Workwize
+    <a href="mailto:umut@ergorisk.net">Umut Gunduz</a> &nbsp;·&nbsp; PM Case Study for Workwize &nbsp;·&nbsp; Apr 2025
   </div>
+
 </div>
 </body>
 </html>

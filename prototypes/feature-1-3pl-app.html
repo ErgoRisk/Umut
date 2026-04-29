@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feature 1 · 3PL App · Workwize</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #F6F7F9; display: flex; align-items: flex-start; justify-content: center; min-height: 100vh; padding: 48px 40px; color: #0F172A; }
+  .card { background: #ffffff; border-radius: 16px; border: 1px solid #E2E8F0; padding: 40px; width: 1040px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+  .feature-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 6px; }
+  .feature-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .feature-sub { font-size: 14px; color: #64748B; margin-bottom: 24px; line-height: 1.5; }
+  .divider { border: none; border-top: 1px solid #F1F5F9; margin-bottom: 28px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+  .tab-btn { font-size: 13px; padding: 8px 16px; border-radius: 8px; border: 1px solid #E2E8F0; background: #ffffff; color: #64748B; cursor: pointer; font-family: inherit; font-weight: 500; transition: all 0.15s; }
+  .tab-btn.active { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; font-weight: 600; }
+  .tab-btn:hover:not(.active) { border-color: #CBD5E1; color: #0F172A; }
+  .tab-label { font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 8px; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* --- Partner View styles --- */
+  .pv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+  .crumb { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 4px; }
+  .view-title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .view-sub { font-size: 13px; color: #64748B; }
+
+  .stats { display: flex; gap: 10px; }
+  .stat { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 10px 16px; text-align: center; min-width: 72px; }
+  .stat-num { font-size: 20px; font-weight: 600; }
+  .stat-lbl { font-size: 10px; color: #64748B; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-top: 2px; }
+
+  .order { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; transition: all 0.15s; }
+  .order:hover { border-color: #CBD5E1; }
+  .order.active-order { border: 2px solid #BFDBFE; background: #FAFBFF; padding: 17px 19px; }
+  .order-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+  .order-id { font-size: 11px; color: #94A3B8; font-family: "SF Mono", Consolas, monospace; font-weight: 500; margin-bottom: 4px; }
+  .order-emp { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .order-meta { font-size: 13px; color: #64748B; }
+
+  .status-col { text-align: right; flex-shrink: 0; }
+  .status-pill { display: inline-block; font-size: 11px; padding: 4px 10px; border-radius: 6px; font-weight: 600; margin-bottom: 6px; }
+  .s-pending { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
+  .s-received { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+  .s-configured { background: #F5F3FF; color: #5B21B6; border: 1px solid #DDD6FE; }
+  .s-shipped { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+  .sla-text { font-size: 12px; color: #64748B; }
+  .sla-text.urgent { color: #B91C1C; font-weight: 500; }
+
+  .detail { margin-top: 16px; padding-top: 16px; border-top: 1px solid #E2E8F0; }
+  .detail-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; }
+  .detail-label { color: #64748B; }
+  .detail-value { color: #0F172A; font-weight: 500; }
+
+  .action-block { margin-top: 18px; padding-top: 16px; border-top: 1px solid #E2E8F0; }
+  .action-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 10px; }
+  .form-row { display: flex; gap: 10px; align-items: center; }
+  .serial-input { flex: 1; font-size: 14px; padding: 10px 12px; border: 1px solid #E2E8F0; border-radius: 8px; background: #ffffff; color: #0F172A; font-family: "SF Mono", Consolas, monospace; }
+  .serial-input:focus { outline: none; border-color: #BFDBFE; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+  .btn-primary { font-size: 14px; padding: 10px 20px; border-radius: 8px; border: 1px solid #BFDBFE; background: #EFF6FF; color: #1D4ED8; cursor: pointer; font-weight: 600; font-family: inherit; white-space: nowrap; }
+  .btn-primary:hover:not(:disabled) { background: #DBEAFE; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .hint { font-size: 12px; color: #94A3B8; font-style: italic; margin-top: 10px; }
+  .confirm-msg { display: none; margin-top: 14px; padding: 12px 14px; background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; border-radius: 8px; font-size: 13px; line-height: 1.5; }
+  .confirm-msg.show { display: block; }
+
+  /* --- Ops View styles --- */
+  .ops-header { margin-bottom: 24px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px 18px; }
+  .stat-lbl2 { font-size: 11px; color: #64748B; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .stat-num2 { font-size: 28px; font-weight: 600; margin-top: 8px; }
+  .stat-trend { font-size: 11px; margin-top: 4px; font-weight: 500; }
+  .trend-up { color: #15803D; }
+  .trend-down { color: #B91C1C; }
+
+  .table-wrap { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; }
+  .thead { display: grid; grid-template-columns: 2fr 1.2fr 1fr 1.6fr 1.2fr; padding: 14px 20px; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; font-size: 11px; color: #64748B; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .trow { display: grid; grid-template-columns: 2fr 1.2fr 1fr 1.6fr 1.2fr; padding: 16px 20px; border-bottom: 1px solid #F1F5F9; font-size: 14px; align-items: center; }
+  .trow:last-child { border-bottom: none; }
+  .partner-name { font-weight: 600; color: #0F172A; }
+  .partner-region { font-size: 12px; color: #64748B; margin-top: 2px; }
+  .muted { color: #64748B; font-size: 13px; }
+  .value { font-weight: 500; font-size: 14px; }
+
+  .pill { display: inline-block; font-size: 11px; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
+  .pill-ok { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+  .pill-watch { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
+  .pill-stuck { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
+
+  .bar-track { height: 5px; border-radius: 3px; background: #F1F5F9; overflow: hidden; margin-bottom: 4px; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+  .bar-green { background: #22C55E; }
+  .bar-amber { background: #F59E0B; }
+  .bar-red { background: #EF4444; }
+  .bar-lbl { font-size: 11px; color: #94A3B8; }
+
+  .alert { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 14px 18px; background: #FEF2F2; border: 1px solid #FECACA; border-radius: 10px; }
+  .alert-text { font-size: 13px; color: #B91C1C; }
+  .alert-text strong { font-weight: 600; }
+  .alert-btn { font-size: 13px; padding: 8px 16px; background: #ffffff; border: 1px solid #FECACA; border-radius: 8px; color: #B91C1C; cursor: pointer; font-weight: 600; font-family: inherit; }
+  .alert-btn:hover { background: #FEF2F2; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="feature-label">Feature 1 · 3PL App</div>
+  <div class="feature-title">Partner portal for global service partners</div>
+  <div class="feature-sub">Replaces email and WhatsApp with a structured order queue. Partners update status and capture serial numbers directly in the portal. Data flows back to Workwize customers in real time.</div>
+
+  <div class="tabs">
+    <div class="tab-label" style="align-self:center;margin-right:4px;margin-bottom:0;">View:</div>
+    <button class="tab-btn active" onclick="switchTab('partner')">Partner view</button>
+    <button class="tab-btn" onclick="switchTab('ops')">Workwize Ops view</button>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PARTNER VIEW -->
+  <div id="tab-partner" class="tab-content active">
+    <div class="pv-header">
+      <div>
+        <div class="crumb">Partner OS · DataPoint Nigeria</div>
+        <div class="view-title">Order queue</div>
+        <div class="view-sub">Lagos · 3 assigned orders</div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stat-num">3</div><div class="stat-lbl">Open</div></div>
+        <div class="stat"><div class="stat-num">1</div><div class="stat-lbl">Urgent</div></div>
+        <div class="stat"><div class="stat-num">94%</div><div class="stat-lbl">On-time</div></div>
+      </div>
+    </div>
+
+    <div class="order active-order">
+      <div class="order-row">
+        <div>
+          <div class="order-id">#WW-48291</div>
+          <div class="order-emp">Adaeze Nwosu · Marketing Lead</div>
+          <div class="order-meta">MacBook Pro 14 + AirPods · Lagos</div>
+        </div>
+        <div class="status-col">
+          <div class="status-pill s-received" id="status-pill">Received</div>
+          <div class="sla-text urgent">SLA: 18 hrs remaining</div>
+        </div>
+      </div>
+      <div class="detail">
+        <div class="detail-row"><span class="detail-label">Customer</span><span class="detail-value">Preply</span></div>
+        <div class="detail-row"><span class="detail-label">Delivery address</span><span class="detail-value">Ikoyi, Lagos</span></div>
+        <div class="detail-row"><span class="detail-label">Employee starts</span><span class="detail-value">Mon, Apr 28</span></div>
+        <div class="detail-row"><span class="detail-label">MDM profile</span><span class="detail-value">Apple Business Manager</span></div>
+      </div>
+      <div class="action-block">
+        <div class="action-label">Mark as configured</div>
+        <div class="form-row">
+          <input type="text" class="serial-input" id="serial-input" placeholder="Serial number (required)" />
+          <button class="btn-primary" id="update-btn" onclick="updateStatus()" disabled>Update status</button>
+        </div>
+        <div class="hint">Order cannot progress until a serial number is captured.</div>
+        <div class="confirm-msg" id="confirm">
+          <strong>Status updated.</strong> Serial synced to Workwize. Customer dashboard now shows Adaeze's MacBook with warranty active.
+        </div>
+      </div>
+    </div>
+
+    <div class="order">
+      <div class="order-row">
+        <div>
+          <div class="order-id">#WW-48303</div>
+          <div class="order-emp">Chidi Okonkwo · Engineer</div>
+          <div class="order-meta">Dell XPS 15 + monitor · Abuja</div>
+        </div>
+        <div class="status-col">
+          <div class="status-pill s-pending">Pending pickup</div>
+          <div class="sla-text">SLA: 3 days remaining</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="order">
+      <div class="order-row">
+        <div>
+          <div class="order-id">#WW-48267</div>
+          <div class="order-emp">Folake Adeyemi · Finance</div>
+          <div class="order-meta">MacBook Air · Lagos</div>
+        </div>
+        <div class="status-col">
+          <div class="status-pill s-shipped">Shipped</div>
+          <div class="sla-text">Delivered yesterday</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPS VIEW -->
+  <div id="tab-ops" class="tab-content">
+    <div class="ops-header">
+      <div class="crumb">Workwize Ops · Partner health</div>
+      <div class="view-title">Partner performance</div>
+      <div class="view-sub">Last 30 days · 12 active partners · 247 orders fulfilled</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-lbl2">On-time SLA</div>
+        <div class="stat-num2">91%</div>
+        <div class="stat-trend trend-up">+6 pts vs last month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl2">Avg serial capture</div>
+        <div class="stat-num2">3.2 hrs</div>
+        <div class="stat-trend trend-up">from 5.1 days</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl2">Stuck orders</div>
+        <div class="stat-num2">2</div>
+        <div class="stat-trend trend-down">needs attention</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl2">Portal adoption</div>
+        <div class="stat-num2">9 / 12</div>
+        <div class="stat-trend trend-up">partners active</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="thead">
+        <div>Partner</div>
+        <div>Open orders</div>
+        <div>On-time</div>
+        <div>Data freshness</div>
+        <div>Status</div>
+      </div>
+      <div class="trow">
+        <div>
+          <div class="partner-name">DataPoint Nigeria</div>
+          <div class="partner-region">Lagos, NG</div>
+        </div>
+        <div class="muted">3 orders</div>
+        <div class="value">96%</div>
+        <div>
+          <div class="bar-track"><div class="bar-fill bar-green" style="width:92%"></div></div>
+          <div class="bar-lbl">updated 12 min ago</div>
+        </div>
+        <div><span class="pill pill-ok">On track</span></div>
+      </div>
+      <div class="trow">
+        <div>
+          <div class="partner-name">TechLogix São Paulo</div>
+          <div class="partner-region">São Paulo, BR</div>
+        </div>
+        <div class="muted">5 orders</div>
+        <div class="value">88%</div>
+        <div>
+          <div class="bar-track"><div class="bar-fill bar-green" style="width:80%"></div></div>
+          <div class="bar-lbl">updated 2 hrs ago</div>
+        </div>
+        <div><span class="pill pill-ok">On track</span></div>
+      </div>
+      <div class="trow">
+        <div>
+          <div class="partner-name">CDMX IT Services</div>
+          <div class="partner-region">Mexico City, MX</div>
+        </div>
+        <div class="muted">4 orders</div>
+        <div class="value">72%</div>
+        <div>
+          <div class="bar-track"><div class="bar-fill bar-red" style="width:35%"></div></div>
+          <div class="bar-lbl">updated 3 days ago</div>
+        </div>
+        <div><span class="pill pill-stuck">Stuck · 2</span></div>
+      </div>
+      <div class="trow">
+        <div>
+          <div class="partner-name">KL Workforce</div>
+          <div class="partner-region">Kuala Lumpur, MY</div>
+        </div>
+        <div class="muted">2 orders</div>
+        <div class="value">94%</div>
+        <div>
+          <div class="bar-track"><div class="bar-fill bar-amber" style="width:75%"></div></div>
+          <div class="bar-lbl">updated 6 hrs ago</div>
+        </div>
+        <div><span class="pill pill-watch">Watching</span></div>
+      </div>
+      <div class="trow">
+        <div>
+          <div class="partner-name">Mumbai TechHub</div>
+          <div class="partner-region">Mumbai, IN</div>
+        </div>
+        <div class="muted">6 orders</div>
+        <div class="value">100%</div>
+        <div>
+          <div class="bar-track"><div class="bar-fill bar-green" style="width:95%"></div></div>
+          <div class="bar-lbl">updated 4 min ago</div>
+        </div>
+        <div><span class="pill pill-ok">On track</span></div>
+      </div>
+    </div>
+
+    <div class="alert">
+      <div class="alert-text"><strong>CDMX IT Services</strong> has not updated 2 orders in 3 days. SLA breach imminent.</div>
+      <button class="alert-btn">Contact partner</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active'); });
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.target.classList.add('active');
+  }
+  var input = document.getElementById('serial-input');
+  var btn = document.getElementById('update-btn');
+  input.addEventListener('input', function() { btn.disabled = input.value.trim().length < 6; });
+  function updateStatus() {
+    if (btn.disabled) return;
+    document.getElementById('confirm').classList.add('show');
+    var pill = document.getElementById('status-pill');
+    pill.textContent = 'Configured';
+    pill.className = 'status-pill s-configured';
+    btn.disabled = true;
+    input.disabled = true;
+  }
+</script>
+</body>
+</html>
