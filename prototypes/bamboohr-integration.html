@@ -3,23 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BambooHR → Workwize Data Flow</title>
+<title>BambooHR Integration · Workwize</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #F6F7F9; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 40px; color: #0F172A; }
   .card { background: #ffffff; border-radius: 16px; border: 1px solid #E2E8F0; padding: 48px; width: 1040px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
   .feature-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 6px; }
   .feature-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
-  .feature-sub { font-size: 14px; color: #64748B; margin-bottom: 32px; line-height: 1.5; }
-  .divider { border: none; border-top: 1px solid #F1F5F9; margin-bottom: 36px; }
+  .feature-sub { font-size: 14px; color: #64748B; margin-bottom: 24px; line-height: 1.5; }
+  .divider { border: none; border-top: 1px solid #F1F5F9; margin-bottom: 32px; }
 
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 4px; margin-bottom: 32px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 4px; width: fit-content; }
+  .tab { font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 7px; cursor: pointer; border: none; background: transparent; color: #64748B; font-family: inherit; transition: all 0.15s; }
+  .tab.active { background: #ffffff; color: #0F172A; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .tab:hover:not(.active) { color: #0F172A; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Flow layout ── */
   .flow { display: grid; grid-template-columns: 1fr 120px 1fr; gap: 16px; align-items: stretch; }
 
   .system { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; }
   .system-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #E2E8F0; }
   .system-logo { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; }
   .logo-bamboo { background: #6ABF4B; color: #ffffff; }
-  .logo-wwize { background: #1D4ED8; color: #ffffff; }
+  .logo-wwize  { background: #1D4ED8; color: #ffffff; }
+  .logo-wwize-red { background: #B91C1C; color: #ffffff; }
   .system-name { font-size: 15px; font-weight: 600; color: #0F172A; }
   .system-role { font-size: 12px; color: #64748B; }
 
@@ -30,14 +41,18 @@
 
   .action-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #F1F5F9; }
   .action-item:last-child { border-bottom: none; }
-  .action-num { width: 22px; height: 22px; border-radius: 50%; background: #EFF6FF; color: #1D4ED8; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .action-num { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .num-blue { background: #EFF6FF; color: #1D4ED8; }
+  .num-red  { background: #FEF2F2; color: #B91C1C; }
   .action-text { font-size: 13px; color: #0F172A; line-height: 1.5; }
   .action-text strong { font-weight: 600; }
 
   .middle { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 20px 0; }
   .arrow-line { position: relative; width: 100%; height: 2px; background: #CBD5E1; }
   .arrow-line::after { content: ''; position: absolute; right: -1px; top: -6px; width: 0; height: 0; border-left: 10px solid #CBD5E1; border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
-  .webhook-label { background: #FEF3C7; color: #B45309; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 6px; border: 1px solid #FDE68A; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em; }
+  .webhook-label { font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 6px; border: 1px solid; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em; }
+  .webhook-green { background: #F0FDF4; color: #15803D; border-color: #BBF7D0; }
+  .webhook-red   { background: #FEF2F2; color: #B91C1C; border-color: #FECACA; }
   .middle-note { font-size: 11px; color: #94A3B8; text-align: center; line-height: 1.4; margin-top: 4px; }
 
   .trigger-box { background: #ffffff; border: 1px dashed #CBD5E1; border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
@@ -51,102 +66,209 @@
 <body>
 
 <div class="card">
-  <div class="feature-label">Feature 2 · Workwize</div>
+  <div class="feature-label">Feature 2 · BambooHR Integration</div>
   <div class="feature-title">BambooHR Integration</div>
-  <div class="feature-sub">When a new hire is created in BambooHR, employee data flows into Workwize automatically. Role, location, and start date drive equipment selection, timing, and employee profile creation, all without IT involvement.</div>
+  <div class="feature-sub">One webhook, two scenarios. When a hire is created, equipment ships automatically. When someone leaves, retrieval and device wipe kick off the same way, no manual handoff required.</div>
   <hr class="divider">
 
-  <div class="flow">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('onboarding', this)">Onboarding</button>
+    <button class="tab" onclick="switchTab('offboarding', this)">Offboarding</button>
+  </div>
 
-    <div class="system">
-      <div class="system-header">
-        <div class="system-logo logo-bamboo">b</div>
-        <div>
-          <div class="system-name">BambooHR</div>
-          <div class="system-role">HR source of truth</div>
+  <!-- ONBOARDING TAB -->
+  <div id="panel-onboarding" class="tab-panel active">
+    <div class="flow">
+
+      <div class="system">
+        <div class="system-header">
+          <div class="system-logo logo-bamboo">b</div>
+          <div>
+            <div class="system-name">BambooHR</div>
+            <div class="system-role">HR source of truth</div>
+          </div>
+        </div>
+
+        <div class="section-label">Trigger event</div>
+        <div class="trigger-box">
+          <div class="trigger-name">employee_created</div>
+          <div class="trigger-detail">Hiring manager completes the new hire record in BambooHR.</div>
+        </div>
+
+        <div class="section-label">Data sent</div>
+        <div class="data-item">
+          <div class="data-name">Employee profile</div>
+          <div class="data-value">Name, email, manager</div>
+        </div>
+        <div class="data-item">
+          <div class="data-name">Role</div>
+          <div class="data-value">Account Executive</div>
+        </div>
+        <div class="data-item">
+          <div class="data-name">Location</div>
+          <div class="data-value">Lagos, Nigeria</div>
+        </div>
+        <div class="data-item">
+          <div class="data-name">Start date</div>
+          <div class="data-value">Mon, Apr 28</div>
+        </div>
+        <div class="data-item">
+          <div class="data-name">Department</div>
+          <div class="data-value">Sales (for reporting)</div>
         </div>
       </div>
 
-      <div class="section-label">Trigger event</div>
-      <div class="trigger-box">
-        <div class="trigger-name">Employee marked as hired</div>
-        <div class="trigger-detail">Hiring manager completes the new hire record in BambooHR.</div>
+      <div class="middle">
+        <div class="webhook-label webhook-green">Webhook</div>
+        <div style="width: 100%; display: flex; align-items: center;">
+          <div class="arrow-line"></div>
+        </div>
+        <div class="middle-note">Real-time sync<br>via BambooHR API</div>
       </div>
 
-      <div class="section-label">Data sent</div>
-      <div class="data-item">
-        <div class="data-name">Employee profile</div>
-        <div class="data-value">Name, email, manager</div>
-      </div>
-      <div class="data-item">
-        <div class="data-name">Role</div>
-        <div class="data-value">Account Executive</div>
-      </div>
-      <div class="data-item">
-        <div class="data-name">Location</div>
-        <div class="data-value">Lagos, Nigeria</div>
-      </div>
-      <div class="data-item">
-        <div class="data-name">Start date</div>
-        <div class="data-value">Mon, Apr 28</div>
-      </div>
-      <div class="data-item">
-        <div class="data-name">Department</div>
-        <div class="data-value">Sales (for reporting)</div>
-      </div>
-    </div>
+      <div class="system">
+        <div class="system-header">
+          <div class="system-logo logo-wwize">W</div>
+          <div>
+            <div class="system-name">Workwize</div>
+            <div class="system-role">Equipment orchestration</div>
+          </div>
+        </div>
 
-    <div class="middle">
-      <div class="webhook-label">Webhook</div>
-      <div style="width: 100%; display: flex; align-items: center;">
-        <div class="arrow-line"></div>
-      </div>
-      <div class="middle-note">Real-time sync<br>via BambooHR API</div>
-    </div>
+        <div class="section-label">What happens on receive</div>
 
-    <div class="system">
-      <div class="system-header">
-        <div class="system-logo logo-wwize">W</div>
-        <div>
-          <div class="system-name">Workwize</div>
-          <div class="system-role">Equipment orchestration</div>
+        <div class="action-item">
+          <div class="action-num num-blue">1</div>
+          <div class="action-text"><strong>Employee record created</strong> in Workwize with profile visible to Ilse.</div>
+        </div>
+
+        <div class="action-item">
+          <div class="action-num num-blue">2</div>
+          <div class="action-text"><strong>Role mapped to equipment package</strong> using company-defined rules (AE gets MacBook Pro 14 + monitor + AirPods).</div>
+        </div>
+
+        <div class="action-item">
+          <div class="action-num num-blue">3</div>
+          <div class="action-text"><strong>Location mapped to warehouse</strong> and local keyboard layout, shipping route calculated.</div>
+        </div>
+
+        <div class="action-item">
+          <div class="action-num num-blue">4</div>
+          <div class="action-text"><strong>Start date sets delivery deadline</strong>, system works backwards to ensure arrival 3 days before day 1.</div>
+        </div>
+
+        <div class="action-item">
+          <div class="action-num num-blue">5</div>
+          <div class="action-text"><strong>Shipment auto-initiated</strong>, Ilse gets one notification with 24-hour override window.</div>
         </div>
       </div>
 
-      <div class="section-label">What happens on receive</div>
-
-      <div class="action-item">
-        <div class="action-num">1</div>
-        <div class="action-text"><strong>Employee record created</strong> in Workwize with profile visible to Ilse.</div>
-      </div>
-
-      <div class="action-item">
-        <div class="action-num">2</div>
-        <div class="action-text"><strong>Role mapped to equipment package</strong> using company-defined rules (AE gets MacBook Pro 14 + monitor + AirPods).</div>
-      </div>
-
-      <div class="action-item">
-        <div class="action-num">3</div>
-        <div class="action-text"><strong>Location mapped to warehouse</strong> and local keyboard layout, shipping route calculated.</div>
-      </div>
-
-      <div class="action-item">
-        <div class="action-num">4</div>
-        <div class="action-text"><strong>Start date sets delivery deadline</strong>, system works backwards to ensure arrival 3 days before day 1.</div>
-      </div>
-
-      <div class="action-item">
-        <div class="action-num">5</div>
-        <div class="action-text"><strong>Shipment auto-initiated</strong>, Ilse gets one notification with 24-hour override window.</div>
-      </div>
     </div>
 
+    <div class="footer-note">
+      <strong>Net effect:</strong> new hire data becomes a ready-to-ship equipment order in Workwize within minutes. No manual data entry, no duplicate work between HR and IT.
+    </div>
   </div>
 
-  <div class="footer-note">
-    <strong>Net effect:</strong> new hire data becomes a ready-to-ship equipment order in Workwize within minutes, no manual data entry, no duplicate work between HR and IT.
+  <!-- OFFBOARDING TAB -->
+  <div id="panel-offboarding" class="tab-panel">
+    <div class="flow">
+
+      <div class="system">
+        <div class="system-header">
+          <div class="system-logo logo-bamboo">b</div>
+          <div>
+            <div class="system-name">BambooHR</div>
+            <div class="system-role">HR source of truth</div>
+          </div>
+        </div>
+
+        <div class="section-label">Trigger event</div>
+        <div class="trigger-box">
+          <div class="trigger-name">employment_terminated</div>
+          <div class="trigger-detail">HR marks the employee as terminated and sets a last working day.</div>
+        </div>
+
+        <div class="section-label">Data sent</div>
+        <div class="data-item">
+          <div class="data-name">Employee</div>
+          <div class="data-value">Priya Nair · priya@acme.com</div>
+        </div>
+        <div class="data-item">
+          <div class="data-name">Last working day</div>
+          <div class="data-value">Fri, May 9</div>
+        </div>
+        <div class="data-item">
+          <div class="data-name">Location</div>
+          <div class="data-value">Mumbai, India</div>
+        </div>
+        <div class="data-item">
+          <div class="data-name">Assets on record</div>
+          <div class="data-value">MacBook Pro 14 · 2x USB-C monitors</div>
+        </div>
+      </div>
+
+      <div class="middle">
+        <div class="webhook-label webhook-red">Webhook</div>
+        <div style="width: 100%; display: flex; align-items: center;">
+          <div class="arrow-line"></div>
+        </div>
+        <div class="middle-note">Real-time sync<br>via BambooHR API</div>
+      </div>
+
+      <div class="system">
+        <div class="system-header">
+          <div class="system-logo logo-wwize-red">W</div>
+          <div>
+            <div class="system-name">Workwize</div>
+            <div class="system-role">Equipment retrieval</div>
+          </div>
+        </div>
+
+        <div class="section-label">What happens on receive</div>
+
+        <div class="action-item">
+          <div class="action-num num-red">1</div>
+          <div class="action-text"><strong>Employee status set to offboarding</strong>, assets flagged for retrieval in Workwize inventory.</div>
+        </div>
+
+        <div class="action-item">
+          <div class="action-num num-red">2</div>
+          <div class="action-text"><strong>Retrieval task created</strong> with return deadline calculated from last working day (typically last day + 5 business days).</div>
+        </div>
+
+        <div class="action-item">
+          <div class="action-num num-red">3</div>
+          <div class="action-text"><strong>Local 3PL partner notified</strong> to schedule a pickup at the employee's address, prepaid return label generated.</div>
+        </div>
+
+        <div class="action-item">
+          <div class="action-num num-red">4</div>
+          <div class="action-text"><strong>MDM wipe queued</strong> to trigger on last working day end-of-day, staged so the employee can finish their shift.</div>
+        </div>
+
+        <div class="action-item">
+          <div class="action-num num-red">5</div>
+          <div class="action-text"><strong>Ilse notified in Slack</strong> with a retrieval summary. One click to confirm or adjust the pickup window.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-note">
+      <strong>Net effect:</strong> termination in BambooHR triggers retrieval, device wipe, and partner coordination automatically. Ilse confirms once instead of coordinating five separate steps.
+    </div>
   </div>
+
 </div>
 
+<script>
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+</script>
 </body>
 </html>

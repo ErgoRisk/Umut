@@ -97,7 +97,7 @@
 <body>
 
 <div class="card">
-  <div class="feature-label">Feature 4 · Workwize</div>
+  <div class="feature-label">Feature 4 · Aggregated Dashboard</div>
   <div class="feature-title">Aggregated Dashboard</div>
   <div class="feature-sub">One global view of Ilse's entire IT fleet across every country. Monday-morning visibility, Monday-afternoon exports to leadership.</div>
   <hr class="divider">
@@ -179,7 +179,7 @@
 
   <div class="section-header">
     <div class="section-title">Regional breakdown</div>
-    <div class="section-meta">Click a row to drill into country details</div>
+    <div class="section-meta" id="row-count">8 countries</div>
   </div>
 
   <div class="table-wrap">
@@ -193,7 +193,7 @@
       <div>Status</div>
     </div>
 
-    <div class="trow">
+    <div class="trow" data-region="emea">
       <div>
         <div class="country-name">🇩🇪 Germany</div>
         <div class="country-count">Berlin, Munich</div>
@@ -209,7 +209,7 @@
       <div><span class="pill pill-ok">On track</span></div>
     </div>
 
-    <div class="trow">
+    <div class="trow" data-region="us">
       <div>
         <div class="country-name">🇺🇸 United States</div>
         <div class="country-count">Austin, NYC, SF</div>
@@ -225,7 +225,7 @@
       <div><span class="pill pill-ok">On track</span></div>
     </div>
 
-    <div class="trow">
+    <div class="trow" data-region="apac">
       <div>
         <div class="country-name">🇮🇳 India</div>
         <div class="country-count">Mumbai, Bangalore</div>
@@ -241,7 +241,7 @@
       <div><span class="pill pill-ok">On track</span></div>
     </div>
 
-    <div class="trow">
+    <div class="trow" data-region="latam">
       <div>
         <div class="country-name">🇧🇷 Brazil</div>
         <div class="country-count">São Paulo</div>
@@ -257,7 +257,7 @@
       <div><span class="pill pill-watch">Watching</span></div>
     </div>
 
-    <div class="trow">
+    <div class="trow" data-region="emea">
       <div>
         <div class="country-name">🇳🇬 Nigeria</div>
         <div class="country-count">Lagos, Abuja</div>
@@ -273,7 +273,7 @@
       <div><span class="pill pill-ok">On track</span></div>
     </div>
 
-    <div class="trow">
+    <div class="trow" data-region="latam">
       <div>
         <div class="country-name">🇲🇽 Mexico</div>
         <div class="country-count">Mexico City</div>
@@ -289,7 +289,7 @@
       <div><span class="pill pill-stuck">Stuck · 4</span></div>
     </div>
 
-    <div class="trow">
+    <div class="trow" data-region="apac">
       <div>
         <div class="country-name">🇯🇵 Japan</div>
         <div class="country-count">Tokyo</div>
@@ -305,7 +305,7 @@
       <div><span class="pill pill-ok">On track</span></div>
     </div>
 
-    <div class="trow">
+    <div class="trow" data-region="apac">
       <div>
         <div class="country-name">🇲🇾 Malaysia</div>
         <div class="country-count">Kuala Lumpur</div>
@@ -353,6 +353,18 @@
 function setFilter(el, region) {
   document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
+
+  var rows = document.querySelectorAll('.trow');
+  var visible = 0;
+  rows.forEach(function(row) {
+    var r = row.getAttribute('data-region');
+    var show = region === 'all' || r === region;
+    row.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  var labels = { all: '8 countries', emea: '2 countries · Europe & Africa', latam: '2 countries · Latin America', apac: '3 countries · Asia Pacific' };
+  document.getElementById('row-count').textContent = labels[region] || (visible + ' countries');
 }
 function openExport() {
   document.getElementById('export-modal').classList.add('show');
