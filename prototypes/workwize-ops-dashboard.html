@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workwize Ops · Partner Performance</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #F6F7F9; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 40px; color: #0F172A; }
+  .card { background: #ffffff; border-radius: 16px; border: 1px solid #E2E8F0; padding: 40px; width: 1040px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .feature-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 6px; }
+  .feature-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .feature-sub { font-size: 14px; color: #64748B; margin-bottom: 28px; }
+  .divider { border: none; border-top: 1px solid #F1F5F9; margin-bottom: 28px; }
+
+  .header { margin-bottom: 24px; }
+  .crumb { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 4px; }
+  .title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .sub { font-size: 13px; color: #64748B; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px 18px; }
+  .stat-lbl { font-size: 11px; color: #64748B; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .stat-num { font-size: 28px; font-weight: 600; margin-top: 8px; }
+  .stat-trend { font-size: 11px; margin-top: 4px; font-weight: 500; }
+  .trend-up { color: #15803D; }
+  .trend-down { color: #B91C1C; }
+
+  .table-wrap { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; }
+  .thead { display: grid; grid-template-columns: 2fr 1.2fr 1fr 1.6fr 1.2fr; padding: 14px 20px; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; font-size: 11px; color: #64748B; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .trow { display: grid; grid-template-columns: 2fr 1.2fr 1fr 1.6fr 1.2fr; padding: 16px 20px; border-bottom: 1px solid #F1F5F9; font-size: 14px; align-items: center; }
+  .trow:last-child { border-bottom: none; }
+  .partner-name { font-weight: 600; color: #0F172A; }
+  .partner-region { font-size: 12px; color: #64748B; margin-top: 2px; }
+  .muted { color: #64748B; font-size: 13px; }
+  .value { font-weight: 500; font-size: 14px; }
+
+  .pill { display: inline-block; font-size: 11px; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
+  .pill-ok { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+  .pill-watch { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
+  .pill-stuck { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
+
+  .bar-container { }
+  .bar { height: 5px; border-radius: 3px; background: #F1F5F9; overflow: hidden; margin-bottom: 4px; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+  .bar-green { background: #22C55E; }
+  .bar-amber { background: #F59E0B; }
+  .bar-red { background: #EF4444; }
+  .bar-lbl { font-size: 11px; color: #94A3B8; }
+
+  .alert { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 14px 18px; background: #FEF2F2; border: 1px solid #FECACA; border-radius: 10px; }
+  .alert-text { font-size: 13px; color: #B91C1C; }
+  .alert-text strong { font-weight: 600; }
+  .alert-btn { font-size: 13px; padding: 8px 16px; background: #ffffff; border: 1px solid #FECACA; border-radius: 8px; color: #B91C1C; cursor: pointer; font-weight: 600; font-family: inherit; }
+  .alert-btn:hover { background: #FEF2F2; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="feature-label">Feature 4 · Partner OS</div>
+  <div class="feature-title">Workwize Ops dashboard</div>
+  <div class="feature-sub">Internal view of partner performance, SLA health, and data freshness. Stuck partners surface automatically for proactive follow-up.</div>
+  <hr class="divider">
+
+  <div class="header">
+    <div class="crumb">Workwize Ops · Partner health</div>
+    <div class="title">Partner performance</div>
+    <div class="sub">Last 30 days · 12 active partners · 247 orders fulfilled</div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-lbl">On-time SLA</div>
+      <div class="stat-num">91%</div>
+      <div class="stat-trend trend-up">+6 pts vs last month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Avg serial capture</div>
+      <div class="stat-num">3.2 hrs</div>
+      <div class="stat-trend trend-up">from 5.1 days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Stuck orders</div>
+      <div class="stat-num">2</div>
+      <div class="stat-trend trend-down">needs attention</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Portal adoption</div>
+      <div class="stat-num">9 / 12</div>
+      <div class="stat-trend trend-up">partners active</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="thead">
+      <div>Partner</div>
+      <div>Open orders</div>
+      <div>On-time</div>
+      <div>Data freshness</div>
+      <div>Status</div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="partner-name">DataPoint Nigeria</div>
+        <div class="partner-region">Lagos, NG</div>
+      </div>
+      <div class="muted">3 orders</div>
+      <div class="value">96%</div>
+      <div class="bar-container">
+        <div class="bar"><div class="bar-fill bar-green" style="width: 92%"></div></div>
+        <div class="bar-lbl">updated 12 min ago</div>
+      </div>
+      <div><span class="pill pill-ok">On track</span></div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="partner-name">TechLogix São Paulo</div>
+        <div class="partner-region">São Paulo, BR</div>
+      </div>
+      <div class="muted">5 orders</div>
+      <div class="value">88%</div>
+      <div class="bar-container">
+        <div class="bar"><div class="bar-fill bar-green" style="width: 80%"></div></div>
+        <div class="bar-lbl">updated 2 hrs ago</div>
+      </div>
+      <div><span class="pill pill-ok">On track</span></div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="partner-name">CDMX IT Services</div>
+        <div class="partner-region">Mexico City, MX</div>
+      </div>
+      <div class="muted">4 orders</div>
+      <div class="value">72%</div>
+      <div class="bar-container">
+        <div class="bar"><div class="bar-fill bar-red" style="width: 35%"></div></div>
+        <div class="bar-lbl">updated 3 days ago</div>
+      </div>
+      <div><span class="pill pill-stuck">Stuck · 2</span></div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="partner-name">KL Workforce</div>
+        <div class="partner-region">Kuala Lumpur, MY</div>
+      </div>
+      <div class="muted">2 orders</div>
+      <div class="value">94%</div>
+      <div class="bar-container">
+        <div class="bar"><div class="bar-fill bar-amber" style="width: 75%"></div></div>
+        <div class="bar-lbl">updated 6 hrs ago</div>
+      </div>
+      <div><span class="pill pill-watch">Watching</span></div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="partner-name">Mumbai TechHub</div>
+        <div class="partner-region">Mumbai, IN</div>
+      </div>
+      <div class="muted">6 orders</div>
+      <div class="value">100%</div>
+      <div class="bar-container">
+        <div class="bar"><div class="bar-fill bar-green" style="width: 95%"></div></div>
+        <div class="bar-lbl">updated 4 min ago</div>
+      </div>
+      <div><span class="pill pill-ok">On track</span></div>
+    </div>
+  </div>
+
+  <div class="alert">
+    <div class="alert-text"><strong>CDMX IT Services</strong> has not updated 2 orders in 3 days. SLA breach imminent.</div>
+    <button class="alert-btn">Contact partner</button>
+  </div>
+</div>
+
+</body>
+</html>

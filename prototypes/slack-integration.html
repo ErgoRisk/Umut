@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workwize Slack Integration</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #F6F7F9; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 40px; color: #0F172A; }
+  .card { background: #ffffff; border-radius: 16px; border: 1px solid #E2E8F0; padding: 40px; width: 720px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .feature-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 6px; }
+  .feature-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .feature-sub { font-size: 14px; color: #64748B; margin-bottom: 24px; line-height: 1.5; }
+  .divider { border: none; border-top: 1px solid #F1F5F9; margin-bottom: 24px; }
+
+  .scenario-label { font-size: 12px; color: #64748B; margin-bottom: 10px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .tab { font-size: 13px; padding: 8px 16px; border-radius: 8px; border: 1px solid #E2E8F0; background: #ffffff; color: #64748B; cursor: pointer; font-family: inherit; }
+  .tab.active { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; }
+
+  .slack-wrapper { background: #F8F9FA; border-radius: 12px; padding: 4px; }
+  .slack-bar { background: #3F0E40; border-radius: 8px 8px 0 0; padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+  .slack-bar-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.3); }
+  .slack-bar-title { font-size: 12px; color: rgba(255,255,255,0.8); margin-left: 4px; }
+  .slack-body { background: #ffffff; border-radius: 0 0 8px 8px; padding: 20px; border: 1px solid #E2E8F0; border-top: none; min-height: 320px; }
+
+  .slack-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .slack-avatar { width: 36px; height: 36px; border-radius: 8px; background: #EFF6FF; color: #1D4ED8; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+  .slack-name { font-size: 14px; font-weight: 600; color: #0F172A; }
+  .slack-app { font-size: 10px; background: #F1F5F9; padding: 2px 6px; border-radius: 3px; color: #64748B; margin-left: 6px; font-weight: 500; }
+  .slack-time { font-size: 12px; color: #94A3B8; }
+  .msg-title { font-size: 15px; font-weight: 600; color: #0F172A; margin-bottom: 14px; }
+
+  .emp-block { background: #F8FAFC; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; }
+  .emp-row { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; }
+  .emp-label { color: #64748B; }
+  .emp-value { color: #0F172A; font-weight: 500; }
+
+  .flag { display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: 8px; margin-bottom: 14px; font-size: 13px; line-height: 1.5; }
+  .flag.warning { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
+  .flag.success { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+  .flag-icon { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .flag.warning .flag-icon { background: #F59E0B; }
+  .flag.success .flag-icon { background: #22C55E; }
+
+  .btn-row { display: flex; gap: 8px; }
+  .btn { flex: 1; font-size: 13px; padding: 10px; border-radius: 8px; border: 1px solid #E2E8F0; background: #ffffff; color: #0F172A; cursor: pointer; font-family: inherit; font-weight: 500; }
+  .btn.approve { background: #F0FDF4; color: #15803D; border-color: #BBF7D0; }
+  .btn:hover { opacity: 0.9; }
+
+  .notif-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #F1F5F9; }
+  .notif-item:last-child { border-bottom: none; }
+  .notif-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+  .notif-shipped { background: #EFF6FF; color: #1D4ED8; }
+  .notif-delivered { background: #F0FDF4; color: #15803D; }
+  .notif-warning { background: #FFFBEB; color: #B45309; }
+  .notif-content { flex: 1; }
+  .notif-title { font-size: 13px; font-weight: 500; color: #0F172A; margin-bottom: 2px; }
+  .notif-meta { font-size: 12px; color: #64748B; }
+  .notif-link { color: #1D4ED8; font-size: 12px; text-decoration: none; margin-top: 4px; display: inline-block; }
+
+  .command-input { background: #F1F5F9; border-radius: 8px; padding: 10px 14px; font-family: "SF Mono", Consolas, monospace; font-size: 13px; color: #0F172A; margin-bottom: 14px; }
+  .command-input .cmd { color: #7C3AED; font-weight: 500; }
+
+  .user-msg { display: flex; gap: 10px; margin-bottom: 12px; }
+  .user-avatar { width: 36px; height: 36px; border-radius: 8px; background: #FEF3C7; color: #B45309; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+  .user-name { font-size: 14px; font-weight: 600; color: #0F172A; }
+  .user-time { font-size: 12px; color: #94A3B8; }
+  .user-text { font-size: 14px; color: #0F172A; margin-top: 2px; }
+
+  .lookup-row { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px solid #F1F5F9; }
+  .lookup-row:last-child { border-bottom: none; }
+  .lookup-label { color: #64748B; }
+  .lookup-value { color: #0F172A; font-weight: 500; }
+
+  .equipment-list { background: #F8FAFC; border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
+  .equipment-item { font-size: 13px; color: #0F172A; padding: 4px 0; display: flex; justify-content: space-between; }
+  .equipment-item span:last-child { color: #64748B; font-size: 12px; }
+
+  .option-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.15s; }
+  .option-card:hover { border-color: #BFDBFE; background: #EFF6FF; }
+  .option-name { font-size: 13px; font-weight: 500; color: #0F172A; }
+  .option-sub { font-size: 12px; color: #64748B; margin-top: 2px; }
+  .option-price { font-size: 13px; font-weight: 600; color: #0F172A; }
+
+  .result-box { display: none; margin-top: 14px; padding: 12px 14px; border-radius: 8px; font-size: 13px; line-height: 1.5; }
+  .result-success { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+  .result-success.show { display: block; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="feature-label">Feature 3 · Workwize</div>
+  <div class="feature-title">Slack Integration</div>
+  <div class="feature-sub">Approvals, notifications, lookups, and employee requests, all handled in Slack without leaving the conversation.</div>
+  <hr class="divider">
+
+  <div class="scenario-label">Scenario</div>
+  <div class="tabs">
+    <button class="tab active" id="t1" onclick="switchTab('approval')">Approval</button>
+    <button class="tab" id="t2" onclick="switchTab('notification')">Notifications</button>
+    <button class="tab" id="t3" onclick="switchTab('lookup')">Lookup (Ilse)</button>
+    <button class="tab" id="t4" onclick="switchTab('request')">Request (employee)</button>
+  </div>
+
+  <div class="slack-wrapper">
+    <div class="slack-bar">
+      <div class="slack-bar-dot"></div>
+      <div class="slack-bar-dot"></div>
+      <div class="slack-bar-dot"></div>
+      <div class="slack-bar-title" id="channel-title"># it-approvals</div>
+    </div>
+    <div class="slack-body" id="slack-body">
+    </div>
+  </div>
+</div>
+
+<script>
+const scenarios = {
+  approval: {
+    channel: '# it-approvals',
+    html: `
+      <div class="slack-head">
+        <div class="slack-avatar">W</div>
+        <div>
+          <div class="slack-name">Workwize <span class="slack-app">APP</span></div>
+          <div class="slack-time">today at 2:14 PM</div>
+        </div>
+      </div>
+      <div class="msg-title">New equipment request from Jenny Okonkwo</div>
+      <div style="font-size: 13px; color: #64748B; margin-bottom: 4px;">Requesting</div>
+      <div style="font-size: 13px; color: #0F172A; margin-bottom: 12px;">MacBook Pro 14 (€2,100) + AirPods Pro (€280)</div>
+      <div class="emp-block">
+        <div class="emp-row"><span class="emp-label">Role</span><span class="emp-value">Software Engineer, Berlin</span></div>
+        <div class="emp-row"><span class="emp-label">Currently assigned</span><span class="emp-value">MacBook Pro 14 · monitor · keyboard</span></div>
+        <div class="emp-row"><span class="emp-label">Last delivery</span><span class="emp-value">2 months ago</span></div>
+        <div class="emp-row"><span class="emp-label">YTD spend</span><span class="emp-value">€3,140 of €3,500</span></div>
+      </div>
+      <div class="flag warning">
+        <div class="flag-icon"></div>
+        <div><strong style="font-weight: 600;">Duplicate risk.</strong> Jenny received a MacBook 2 months ago, warranty active for 10 more months. This order would also push her to 97% of her annual budget.</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn approve" onclick="showResult('approve')">Approve</button>
+        <button class="btn" onclick="showResult('deny')">Deny</button>
+        <button class="btn" onclick="showResult('ask')">Ask why</button>
+      </div>
+      <div class="result-box result-success" id="result"></div>
+    `
+  },
+  notification: {
+    channel: '# it-ops',
+    html: `
+      <div class="slack-head">
+        <div class="slack-avatar">W</div>
+        <div>
+          <div class="slack-name">Workwize <span class="slack-app">APP</span></div>
+          <div class="slack-time">fleet updates · today</div>
+        </div>
+      </div>
+      <div class="msg-title">Today's fleet activity</div>
+
+      <div class="notif-item">
+        <div class="notif-icon notif-delivered">✓</div>
+        <div class="notif-content">
+          <div class="notif-title">Sofia Martinez received her MacBook Pro 14</div>
+          <div class="notif-meta">Lagos, Nigeria · 9:42 AM · signed by recipient</div>
+        </div>
+      </div>
+
+      <div class="notif-item">
+        <div class="notif-icon notif-shipped">→</div>
+        <div class="notif-content">
+          <div class="notif-title">3 devices shipped to São Paulo</div>
+          <div class="notif-meta">ETA Thursday · TechLogix São Paulo</div>
+          <a href="#" class="notif-link">Track all 3</a>
+        </div>
+      </div>
+
+      <div class="notif-item">
+        <div class="notif-icon notif-warning">!</div>
+        <div class="notif-content">
+          <div class="notif-title">Warranty expiring: 12 devices in next 30 days</div>
+          <div class="notif-meta">Mostly MacBooks in Berlin and Austin cohorts</div>
+          <a href="#" class="notif-link">Review cohort</a>
+        </div>
+      </div>
+
+      <div class="notif-item">
+        <div class="notif-icon notif-warning">!</div>
+        <div class="notif-content">
+          <div class="notif-title">CDMX IT Services has not updated 2 orders in 3 days</div>
+          <div class="notif-meta">SLA breach imminent</div>
+          <a href="#" class="notif-link">Contact partner</a>
+        </div>
+      </div>
+    `
+  },
+  lookup: {
+    channel: '# it-team',
+    html: `
+      <div class="user-msg">
+        <div class="user-avatar">I</div>
+        <div>
+          <div><span class="user-name">Ilse</span> <span class="user-time">2:47 PM</span></div>
+          <div class="user-text"><span class="command-input" style="margin: 0; padding: 4px 10px; display: inline-block;"><span class="cmd">/workwize</span> Sofia Martinez</span></div>
+        </div>
+      </div>
+
+      <div class="slack-head">
+        <div class="slack-avatar">W</div>
+        <div>
+          <div class="slack-name">Workwize <span class="slack-app">APP</span></div>
+          <div class="slack-time">just now · only visible to you</div>
+        </div>
+      </div>
+
+      <div class="msg-title">Sofia Martinez · Account Executive</div>
+
+      <div class="emp-block">
+        <div class="lookup-row"><span class="lookup-label">Location</span><span class="lookup-value">Lagos, Nigeria</span></div>
+        <div class="lookup-row"><span class="lookup-label">Start date</span><span class="lookup-value">Mar 3, 2024</span></div>
+        <div class="lookup-row"><span class="lookup-label">YTD spend</span><span class="lookup-value">€1,847 of €2,500</span></div>
+        <div class="lookup-row"><span class="lookup-label">Last order</span><span class="lookup-value">8 months ago</span></div>
+      </div>
+
+      <div style="font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 8px;">Current equipment</div>
+      <div class="equipment-list">
+        <div class="equipment-item"><span>MacBook Pro 14</span><span>warranty until Nov 2027</span></div>
+        <div class="equipment-item"><span>27" Dell monitor</span><span>delivered 8 mo ago</span></div>
+        <div class="equipment-item"><span>AirPods Pro</span><span>delivered 11 mo ago</span></div>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button class="btn" style="flex: 1;">View full profile</button>
+        <button class="btn" style="flex: 1;">Order history</button>
+      </div>
+    `
+  },
+  request: {
+    channel: '@ workwize',
+    html: `
+      <div class="user-msg">
+        <div class="user-avatar">J</div>
+        <div>
+          <div><span class="user-name">Jenny Okonkwo</span> <span class="user-time">3:02 PM</span></div>
+          <div class="user-text"><span class="command-input" style="margin: 0; padding: 4px 10px; display: inline-block;"><span class="cmd">/workwize</span> request monitor</span></div>
+        </div>
+      </div>
+
+      <div class="slack-head">
+        <div class="slack-avatar">W</div>
+        <div>
+          <div class="slack-name">Workwize <span class="slack-app">APP</span></div>
+          <div class="slack-time">just now · only visible to you</div>
+        </div>
+      </div>
+
+      <div class="msg-title">Hi Jenny, here are approved monitors for your role</div>
+      <div style="font-size: 13px; color: #64748B; margin-bottom: 14px;">Based on your Engineer role and €360 remaining budget. Pick one to submit.</div>
+
+      <div class="option-card" onclick="showResult('picked')">
+        <div>
+          <div class="option-name">Dell U2723QE · 27" 4K</div>
+          <div class="option-sub">USB-C · in stock, 3 day delivery</div>
+        </div>
+        <div class="option-price">€340</div>
+      </div>
+
+      <div class="option-card" onclick="showResult('picked')">
+        <div>
+          <div class="option-name">LG 27UP850 · 27" 4K</div>
+          <div class="option-sub">USB-C · in stock, 3 day delivery</div>
+        </div>
+        <div class="option-price">€320</div>
+      </div>
+
+      <div class="option-card" onclick="showResult('picked')">
+        <div>
+          <div class="option-name">Dell U2422H · 24" FHD</div>
+          <div class="option-sub">under budget · in stock</div>
+        </div>
+        <div class="option-price">€220</div>
+      </div>
+
+      <div class="result-box result-success" id="result"></div>
+    `
+  }
+};
+
+function switchTab(name) {
+  const tabs = { approval: 't1', notification: 't2', lookup: 't3', request: 't4' };
+  Object.entries(tabs).forEach(([k, id]) => {
+    document.getElementById(id).className = k === name ? 'tab active' : 'tab';
+  });
+  document.getElementById('channel-title').textContent = scenarios[name].channel;
+  document.getElementById('slack-body').innerHTML = scenarios[name].html;
+}
+
+function showResult(action) {
+  const r = document.getElementById('result');
+  if (!r) return;
+  const msgs = {
+    approve: '<strong>Approved.</strong> Order routed to Workwize fulfillment. Jenny notified in Slack.',
+    deny: '<strong>Denied.</strong> Jenny notified with optional reason.',
+    ask: '<strong>Sent a templated question.</strong> "Can you share how this fits your current setup?" Response returns to this thread.',
+    picked: '<strong>Request submitted.</strong> Ilse will review in #it-approvals. You\'ll get a Slack DM when it\'s decided.'
+  };
+  r.innerHTML = msgs[action];
+  r.classList.add('show');
+}
+
+switchTab('approval');
+</script>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aggregated Dashboard · Workwize</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #F6F7F9; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 40px; color: #0F172A; }
+  .card { background: #ffffff; border-radius: 16px; border: 1px solid #E2E8F0; padding: 40px; width: 1120px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .feature-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 6px; }
+  .feature-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .feature-sub { font-size: 14px; color: #64748B; margin-bottom: 28px; line-height: 1.5; }
+  .divider { border: none; border-top: 1px solid #F1F5F9; margin-bottom: 28px; }
+
+  .dash-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+  .crumb { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 4px; }
+  .title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .sub { font-size: 13px; color: #64748B; }
+
+  .filter-row { display: flex; gap: 8px; align-items: center; }
+  .filter-pill { font-size: 12px; padding: 6px 12px; border-radius: 6px; border: 1px solid #E2E8F0; background: #ffffff; color: #64748B; cursor: pointer; font-family: inherit; font-weight: 500; }
+  .filter-pill.active { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; }
+  .filter-pill:hover { border-color: #CBD5E1; }
+  .export-btn { font-size: 12px; padding: 7px 14px; border-radius: 6px; border: 1px solid #BFDBFE; background: #EFF6FF; color: #1D4ED8; cursor: pointer; font-family: inherit; font-weight: 600; }
+  .export-btn:hover { background: #DBEAFE; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 28px; }
+  .stat-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px 18px; }
+  .stat-lbl { font-size: 11px; color: #64748B; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .stat-num { font-size: 26px; font-weight: 600; margin-top: 8px; }
+  .stat-trend { font-size: 11px; margin-top: 4px; font-weight: 500; }
+  .trend-up { color: #15803D; }
+  .trend-down { color: #B91C1C; }
+  .trend-neutral { color: #64748B; }
+
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  .chart-card { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; }
+  .chart-title { font-size: 13px; font-weight: 600; color: #0F172A; margin-bottom: 4px; }
+  .chart-sub { font-size: 12px; color: #64748B; margin-bottom: 16px; }
+  .chart-viz { height: 140px; position: relative; display: flex; align-items: flex-end; gap: 8px; }
+  .bar { flex: 1; background: #DBEAFE; border-radius: 4px 4px 0 0; position: relative; cursor: pointer; transition: background 0.15s; }
+  .bar:hover { background: #BFDBFE; }
+  .bar.highlight { background: #1D4ED8; }
+  .bar-label { position: absolute; bottom: -22px; left: 0; right: 0; text-align: center; font-size: 11px; color: #94A3B8; }
+  .chart-viz.line { padding-bottom: 24px; }
+  .line-svg { width: 100%; height: 100%; }
+
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .section-title { font-size: 15px; font-weight: 600; }
+  .section-meta { font-size: 12px; color: #64748B; }
+
+  .table-wrap { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; }
+  .thead { display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr 1.2fr 1fr 1fr; padding: 14px 20px; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; font-size: 11px; color: #64748B; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; cursor: pointer; }
+  .thead > div:hover { color: #0F172A; }
+  .thead .sort-indicator { color: #1D4ED8; }
+  .trow { display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr 1.2fr 1fr 1fr; padding: 16px 20px; border-bottom: 1px solid #F1F5F9; font-size: 14px; align-items: center; cursor: pointer; transition: background 0.15s; }
+  .trow:hover { background: #FAFBFC; }
+  .trow:last-child { border-bottom: none; }
+
+  .country-name { font-weight: 600; color: #0F172A; }
+  .country-flag { display: inline-block; width: 18px; height: 13px; border-radius: 2px; margin-right: 8px; vertical-align: middle; }
+  .country-count { font-size: 12px; color: #64748B; font-weight: 400; margin-top: 2px; }
+  .value { font-weight: 500; color: #0F172A; }
+  .muted { color: #64748B; font-size: 13px; }
+
+  .pill { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 6px; font-weight: 600; }
+  .pill-ok { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+  .pill-watch { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
+  .pill-stuck { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
+
+  .sla-bar-wrap { }
+  .sla-bar { height: 5px; border-radius: 3px; background: #F1F5F9; overflow: hidden; margin-bottom: 3px; }
+  .sla-fill { height: 100%; border-radius: 3px; }
+  .sla-green { background: #22C55E; }
+  .sla-amber { background: #F59E0B; }
+  .sla-red { background: #EF4444; }
+  .sla-pct { font-size: 12px; font-weight: 500; }
+
+  .export-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.5); z-index: 100; align-items: center; justify-content: center; }
+  .export-modal.show { display: flex; }
+  .export-dialog { background: #ffffff; border-radius: 12px; padding: 24px; width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .modal-sub { font-size: 13px; color: #64748B; margin-bottom: 20px; }
+  .modal-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .modal-option { padding: 14px 16px; border: 1px solid #E2E8F0; border-radius: 8px; cursor: pointer; transition: all 0.15s; }
+  .modal-option:hover { border-color: #BFDBFE; background: #EFF6FF; }
+  .option-title { font-size: 14px; font-weight: 600; color: #0F172A; margin-bottom: 2px; }
+  .option-desc { font-size: 12px; color: #64748B; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .modal-btn { font-size: 13px; padding: 8px 16px; border-radius: 8px; border: 1px solid #E2E8F0; background: #ffffff; color: #0F172A; cursor: pointer; font-family: inherit; font-weight: 500; }
+
+  .toast { display: none; position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); background: #0F172A; color: #ffffff; padding: 12px 20px; border-radius: 8px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 200; }
+  .toast.show { display: block; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="feature-label">Feature 4 · Workwize</div>
+  <div class="feature-title">Aggregated Dashboard</div>
+  <div class="feature-sub">One global view of Ilse's entire IT fleet across every country. Monday-morning visibility, Monday-afternoon exports to leadership.</div>
+  <hr class="divider">
+
+  <div class="dash-header">
+    <div>
+      <div class="crumb">Workwize · Global ops</div>
+      <div class="title">Fleet overview</div>
+      <div class="sub">April 2026 · 12 countries · 1,247 employees · 247 active orders</div>
+    </div>
+    <div class="filter-row">
+      <button class="filter-pill active" onclick="setFilter(this, 'all')">All regions</button>
+      <button class="filter-pill" onclick="setFilter(this, 'emea')">EMEA</button>
+      <button class="filter-pill" onclick="setFilter(this, 'latam')">LATAM</button>
+      <button class="filter-pill" onclick="setFilter(this, 'apac')">APAC</button>
+      <button class="export-btn" onclick="openExport()">Export ↓</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-lbl">Active orders</div>
+      <div class="stat-num">247</div>
+      <div class="stat-trend trend-up">+12% vs last month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Stuck orders</div>
+      <div class="stat-num">8</div>
+      <div class="stat-trend trend-down">needs attention</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">Fleet size</div>
+      <div class="stat-num">1,247</div>
+      <div class="stat-trend trend-neutral">across 12 countries</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">YTD spend</div>
+      <div class="stat-num">€842K</div>
+      <div class="stat-trend trend-neutral">68% of annual budget</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-lbl">On-time SLA</div>
+      <div class="stat-num">91%</div>
+      <div class="stat-trend trend-up">+6 pts vs last month</div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Monthly spend trend</div>
+      <div class="chart-sub">Last 6 months · all regions</div>
+      <div class="chart-viz">
+        <div class="bar" style="height: 55%"><div class="bar-label">Nov</div></div>
+        <div class="bar" style="height: 62%"><div class="bar-label">Dec</div></div>
+        <div class="bar" style="height: 48%"><div class="bar-label">Jan</div></div>
+        <div class="bar" style="height: 70%"><div class="bar-label">Feb</div></div>
+        <div class="bar" style="height: 78%"><div class="bar-label">Mar</div></div>
+        <div class="bar highlight" style="height: 85%"><div class="bar-label">Apr</div></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">SLA performance trend</div>
+      <div class="chart-sub">Last 6 months · % on-time delivery</div>
+      <div class="chart-viz line">
+        <svg class="line-svg" viewBox="0 0 300 120" preserveAspectRatio="none">
+          <polyline points="0,60 60,50 120,55 180,40 240,30 300,20" fill="none" stroke="#1D4ED8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="0" cy="60" r="4" fill="#1D4ED8"/>
+          <circle cx="60" cy="50" r="4" fill="#1D4ED8"/>
+          <circle cx="120" cy="55" r="4" fill="#1D4ED8"/>
+          <circle cx="180" cy="40" r="4" fill="#1D4ED8"/>
+          <circle cx="240" cy="30" r="4" fill="#1D4ED8"/>
+          <circle cx="300" cy="20" r="5" fill="#1D4ED8" stroke="#ffffff" stroke-width="2"/>
+        </svg>
+        <div class="bar-label" style="position: absolute; bottom: 0; left: 0;">Nov: 79%</div>
+        <div class="bar-label" style="position: absolute; bottom: 0; right: 0;">Apr: 91%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-title">Regional breakdown</div>
+    <div class="section-meta">Click a row to drill into country details</div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="thead">
+      <div>Country</div>
+      <div>Fleet size</div>
+      <div>Active orders</div>
+      <div>Stuck</div>
+      <div>SLA performance <span class="sort-indicator">↓</span></div>
+      <div>MTD spend</div>
+      <div>Status</div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="country-name">🇩🇪 Germany</div>
+        <div class="country-count">Berlin, Munich</div>
+      </div>
+      <div class="value">312</div>
+      <div class="value">42</div>
+      <div class="value">0</div>
+      <div class="sla-bar-wrap">
+        <div class="sla-bar"><div class="sla-fill sla-green" style="width: 98%"></div></div>
+        <div class="sla-pct">98%</div>
+      </div>
+      <div class="value">€142K</div>
+      <div><span class="pill pill-ok">On track</span></div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="country-name">🇺🇸 United States</div>
+        <div class="country-count">Austin, NYC, SF</div>
+      </div>
+      <div class="value">284</div>
+      <div class="value">38</div>
+      <div class="value">1</div>
+      <div class="sla-bar-wrap">
+        <div class="sla-bar"><div class="sla-fill sla-green" style="width: 95%"></div></div>
+        <div class="sla-pct">95%</div>
+      </div>
+      <div class="value">€168K</div>
+      <div><span class="pill pill-ok">On track</span></div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="country-name">🇮🇳 India</div>
+        <div class="country-count">Mumbai, Bangalore</div>
+      </div>
+      <div class="value">178</div>
+      <div class="value">24</div>
+      <div class="value">0</div>
+      <div class="sla-bar-wrap">
+        <div class="sla-bar"><div class="sla-fill sla-green" style="width: 96%"></div></div>
+        <div class="sla-pct">96%</div>
+      </div>
+      <div class="value">€58K</div>
+      <div><span class="pill pill-ok">On track</span></div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="country-name">🇧🇷 Brazil</div>
+        <div class="country-count">São Paulo</div>
+      </div>
+      <div class="value">142</div>
+      <div class="value">31</div>
+      <div class="value">1</div>
+      <div class="sla-bar-wrap">
+        <div class="sla-bar"><div class="sla-fill sla-amber" style="width: 86%"></div></div>
+        <div class="sla-pct">86%</div>
+      </div>
+      <div class="value">€72K</div>
+      <div><span class="pill pill-watch">Watching</span></div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="country-name">🇳🇬 Nigeria</div>
+        <div class="country-count">Lagos, Abuja</div>
+      </div>
+      <div class="value">98</div>
+      <div class="value">18</div>
+      <div class="value">0</div>
+      <div class="sla-bar-wrap">
+        <div class="sla-bar"><div class="sla-fill sla-green" style="width: 94%"></div></div>
+        <div class="sla-pct">94%</div>
+      </div>
+      <div class="value">€34K</div>
+      <div><span class="pill pill-ok">On track</span></div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="country-name">🇲🇽 Mexico</div>
+        <div class="country-count">Mexico City</div>
+      </div>
+      <div class="value">87</div>
+      <div class="value">15</div>
+      <div class="value">4</div>
+      <div class="sla-bar-wrap">
+        <div class="sla-bar"><div class="sla-fill sla-red" style="width: 72%"></div></div>
+        <div class="sla-pct">72%</div>
+      </div>
+      <div class="value">€41K</div>
+      <div><span class="pill pill-stuck">Stuck · 4</span></div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="country-name">🇯🇵 Japan</div>
+        <div class="country-count">Tokyo</div>
+      </div>
+      <div class="value">76</div>
+      <div class="value">11</div>
+      <div class="value">0</div>
+      <div class="sla-bar-wrap">
+        <div class="sla-bar"><div class="sla-fill sla-green" style="width: 100%"></div></div>
+        <div class="sla-pct">100%</div>
+      </div>
+      <div class="value">€48K</div>
+      <div><span class="pill pill-ok">On track</span></div>
+    </div>
+
+    <div class="trow">
+      <div>
+        <div class="country-name">🇲🇾 Malaysia</div>
+        <div class="country-count">Kuala Lumpur</div>
+      </div>
+      <div class="value">70</div>
+      <div class="value">12</div>
+      <div class="value">2</div>
+      <div class="sla-bar-wrap">
+        <div class="sla-bar"><div class="sla-fill sla-amber" style="width: 82%"></div></div>
+        <div class="sla-pct">82%</div>
+      </div>
+      <div class="value">€28K</div>
+      <div><span class="pill pill-watch">Watching</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="export-modal" id="export-modal">
+  <div class="export-dialog">
+    <div class="modal-title">Export dashboard</div>
+    <div class="modal-sub">Current filter: All regions · April 2026</div>
+    <div class="modal-options">
+      <div class="modal-option" onclick="doExport('PDF')">
+        <div class="option-title">PDF report</div>
+        <div class="option-desc">Formatted for leadership, includes charts and regional breakdown.</div>
+      </div>
+      <div class="modal-option" onclick="doExport('CSV')">
+        <div class="option-title">CSV data</div>
+        <div class="option-desc">Raw data for finance, analysis, or custom reporting.</div>
+      </div>
+      <div class="modal-option" onclick="doExport('Scheduled')">
+        <div class="option-title">Schedule weekly email</div>
+        <div class="option-desc">Deliver this view every Monday to your inbox or Slack channel.</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn" onclick="closeExport()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function setFilter(el, region) {
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+function openExport() {
+  document.getElementById('export-modal').classList.add('show');
+}
+function closeExport() {
+  document.getElementById('export-modal').classList.remove('show');
+}
+function doExport(type) {
+  closeExport();
+  var toast = document.getElementById('toast');
+  var msgs = {
+    'PDF': '✓ PDF exported. Sent to Downloads.',
+    'CSV': '✓ CSV exported. Sent to Downloads.',
+    'Scheduled': '✓ Weekly email scheduled. First delivery next Monday 8 AM.'
+  };
+  toast.textContent = msgs[type];
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 3000);
+}
+</script>
+</body>
+</html>

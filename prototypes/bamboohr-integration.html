@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BambooHR → Workwize Data Flow</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #F6F7F9; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 40px; color: #0F172A; }
+  .card { background: #ffffff; border-radius: 16px; border: 1px solid #E2E8F0; padding: 48px; width: 1040px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .feature-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 6px; }
+  .feature-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .feature-sub { font-size: 14px; color: #64748B; margin-bottom: 32px; line-height: 1.5; }
+  .divider { border: none; border-top: 1px solid #F1F5F9; margin-bottom: 36px; }
+
+  .flow { display: grid; grid-template-columns: 1fr 120px 1fr; gap: 16px; align-items: stretch; }
+
+  .system { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; }
+  .system-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #E2E8F0; }
+  .system-logo { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+  .logo-bamboo { background: #6ABF4B; color: #ffffff; }
+  .logo-wwize { background: #1D4ED8; color: #ffffff; }
+  .system-name { font-size: 15px; font-weight: 600; color: #0F172A; }
+  .system-role { font-size: 12px; color: #64748B; }
+
+  .section-label { font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 10px; }
+  .data-item { background: #ffffff; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; }
+  .data-name { font-size: 13px; font-weight: 500; color: #0F172A; margin-bottom: 2px; }
+  .data-value { font-size: 12px; color: #64748B; }
+
+  .action-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #F1F5F9; }
+  .action-item:last-child { border-bottom: none; }
+  .action-num { width: 22px; height: 22px; border-radius: 50%; background: #EFF6FF; color: #1D4ED8; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .action-text { font-size: 13px; color: #0F172A; line-height: 1.5; }
+  .action-text strong { font-weight: 600; }
+
+  .middle { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 20px 0; }
+  .arrow-line { position: relative; width: 100%; height: 2px; background: #CBD5E1; }
+  .arrow-line::after { content: ''; position: absolute; right: -1px; top: -6px; width: 0; height: 0; border-left: 10px solid #CBD5E1; border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
+  .webhook-label { background: #FEF3C7; color: #B45309; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 6px; border: 1px solid #FDE68A; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em; }
+  .middle-note { font-size: 11px; color: #94A3B8; text-align: center; line-height: 1.4; margin-top: 4px; }
+
+  .trigger-box { background: #ffffff; border: 1px dashed #CBD5E1; border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
+  .trigger-name { font-size: 12px; font-weight: 600; color: #0F172A; margin-bottom: 4px; }
+  .trigger-detail { font-size: 12px; color: #64748B; line-height: 1.4; }
+
+  .footer-note { margin-top: 32px; padding: 16px 20px; background: #F8FAFC; border-radius: 10px; font-size: 13px; color: #64748B; line-height: 1.6; text-align: center; }
+  .footer-note strong { color: #0F172A; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="feature-label">Feature 2 · Workwize</div>
+  <div class="feature-title">BambooHR Integration</div>
+  <div class="feature-sub">When a new hire is created in BambooHR, employee data flows into Workwize automatically. Role, location, and start date drive equipment selection, timing, and employee profile creation, all without IT involvement.</div>
+  <hr class="divider">
+
+  <div class="flow">
+
+    <div class="system">
+      <div class="system-header">
+        <div class="system-logo logo-bamboo">b</div>
+        <div>
+          <div class="system-name">BambooHR</div>
+          <div class="system-role">HR source of truth</div>
+        </div>
+      </div>
+
+      <div class="section-label">Trigger event</div>
+      <div class="trigger-box">
+        <div class="trigger-name">Employee marked as hired</div>
+        <div class="trigger-detail">Hiring manager completes the new hire record in BambooHR.</div>
+      </div>
+
+      <div class="section-label">Data sent</div>
+      <div class="data-item">
+        <div class="data-name">Employee profile</div>
+        <div class="data-value">Name, email, manager</div>
+      </div>
+      <div class="data-item">
+        <div class="data-name">Role</div>
+        <div class="data-value">Account Executive</div>
+      </div>
+      <div class="data-item">
+        <div class="data-name">Location</div>
+        <div class="data-value">Lagos, Nigeria</div>
+      </div>
+      <div class="data-item">
+        <div class="data-name">Start date</div>
+        <div class="data-value">Mon, Apr 28</div>
+      </div>
+      <div class="data-item">
+        <div class="data-name">Department</div>
+        <div class="data-value">Sales (for reporting)</div>
+      </div>
+    </div>
+
+    <div class="middle">
+      <div class="webhook-label">Webhook</div>
+      <div style="width: 100%; display: flex; align-items: center;">
+        <div class="arrow-line"></div>
+      </div>
+      <div class="middle-note">Real-time sync<br>via BambooHR API</div>
+    </div>
+
+    <div class="system">
+      <div class="system-header">
+        <div class="system-logo logo-wwize">W</div>
+        <div>
+          <div class="system-name">Workwize</div>
+          <div class="system-role">Equipment orchestration</div>
+        </div>
+      </div>
+
+      <div class="section-label">What happens on receive</div>
+
+      <div class="action-item">
+        <div class="action-num">1</div>
+        <div class="action-text"><strong>Employee record created</strong> in Workwize with profile visible to Ilse.</div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">2</div>
+        <div class="action-text"><strong>Role mapped to equipment package</strong> using company-defined rules (AE gets MacBook Pro 14 + monitor + AirPods).</div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">3</div>
+        <div class="action-text"><strong>Location mapped to warehouse</strong> and local keyboard layout, shipping route calculated.</div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">4</div>
+        <div class="action-text"><strong>Start date sets delivery deadline</strong>, system works backwards to ensure arrival 3 days before day 1.</div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-num">5</div>
+        <div class="action-text"><strong>Shipment auto-initiated</strong>, Ilse gets one notification with 24-hour override window.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-note">
+    <strong>Net effect:</strong> new hire data becomes a ready-to-ship equipment order in Workwize within minutes, no manual data entry, no duplicate work between HR and IT.
+  </div>
+</div>
+
+</body>
+</html>
